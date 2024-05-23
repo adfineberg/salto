@@ -80,13 +80,16 @@ const onFetch = async (elements: Element[]): Promise<void> => {
       log.error(`${CUSTOM_OBJECT_FIELD_OPTIONS_TYPE_NAME} object type not found`)
       return
     }
+    const basePath = customObjectField.path
+      ? [...customObjectField.path.slice(0, customObjectField.path.length - 1), 'options']
+      : [ZENDESK, RECORDS_PATH, CUSTOM_OBJECT_FIELD_OPTIONS_TYPE_NAME]
     const optionInstances = options.map(option => {
       const instanceName = naclCase(`${customObjectField.elemID.name}__${option.value}`)
       return new InstanceElement(
         instanceName,
         customObjectFieldOptionType,
         option,
-        [ZENDESK, RECORDS_PATH, CUSTOM_OBJECT_FIELD_OPTIONS_TYPE_NAME, pathNaclCase(instanceName)],
+        [...basePath, pathNaclCase(instanceName)],
         { [CORE_ANNOTATIONS.PARENT]: [new ReferenceExpression(customObjectField.elemID, customObjectField)] },
       )
     })
